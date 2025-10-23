@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sua_senha
+      POSTGRES_DB: sistema_proteger
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # Adicionado para inicializar as tabelas
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: sua_senha
+      DB_DATABASE: sistema_proteger
+      JWT_SECRET: sua_chave_jwt
+    depends_on:
+      - db
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      # Não é necessário, mas é bom para um projeto React
+      NODE_ENV: development
+volumes:
+  pgdata:
