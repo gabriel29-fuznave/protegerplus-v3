@@ -2,7 +2,7 @@
 FROM node:16-alpine as builder
 WORKDIR /app
 COPY package.json .
-COPY package-lock.json .
+# Removida a linha 'COPY package-lock.json .' pois o arquivo não foi gerado
 RUN npm install
 COPY . .
 RUN npm run build
